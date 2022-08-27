@@ -1,0 +1,21 @@
+name: "Python Install script Poetry Action"
+author: "@Tordf"
+description: "An action to run https://python-poetry.org/"
+branding:
+  icon: "truck"
+  color: "gray-dark"
+inputs:
+  poetry-repository:
+    description: "The External python repository"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        python -m pip install --upgrade pip
+        curl -sSL https://install.python-poetry.org | python3 - --git https://github.com/python-poetry/poetry.git@master
+        poetry self add poetry-artifactregistry-plugin
+        poetry config repositories.google ${{ inputs.poetry-repository }}
+        poetry config virtualenvs.create false
+        poetry install
+      shell: bash
